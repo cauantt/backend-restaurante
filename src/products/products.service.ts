@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, RawBody } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, RawBody } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -98,7 +98,23 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(productId: number) {
+    
+    try{
+
+      const exists = await this.repository.findOneBy({productId})
+
+      if(!exists) throw new NotFoundException("Produto não encontrado!")
+
+      await this.repository.delete(productId);
+
+      return ("Deletado com sucesso!")
+
+    }
+    catch(error){
+
+      console.error(error);
+      throw new InternalServerErrorException("Erro ao deletar o produto");
+    }
   }
 }
