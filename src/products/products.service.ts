@@ -90,12 +90,36 @@ export class ProductsService {
     }
   }
   
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(productId: number) {
+
+    try {
+
+    const product = await this.repository.findOneBy({productId})
+
+    if(!product) throw new NotFoundException("Produto não encontrado!");
+
+    return product}
+
+    catch(error) 
+    {
+
+      console.log(error);
+    }
+
+
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(productId: number, updateProductDto: UpdateProductDto) {
+    
+    const product = await this.repository.findOneBy({productId});
+
+    if(!product) throw new NotFoundException("Produto não encontrado!")
+
+      const newproduct = await this.repository.update(productId, updateProductDto)
+      return await this.repository.findOneBy({productId})
+  
+
+    
   }
 
   async remove(productId: number) {
