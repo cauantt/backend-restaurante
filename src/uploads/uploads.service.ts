@@ -46,30 +46,54 @@ export class UploadsService {
     }
   }
 
+
   async deleteProfilePicture(userId: number) {
     try {
       const user = await this.usersRepository.findOneBy({ userId });
       if (!user) throw new NotFoundException('User not found');
-
+  
       if (user.path) {
-        const fileName = user.path.split('/').pop()?.split('?')[0];
-        if (!fileName) throw new BadRequestException('Failed to extract file name');
-
-        const filePath = `restaurante/perfil/${fileName}`;
+        // Extrair o caminho do arquivo da URL
+        const url = user.path;
+        const decodedUrl = decodeURIComponent(url);
+        const filePath = decodedUrl.split('/o/')[1]?.split('?')[0];
+  
+        if (!filePath) throw new BadRequestException('Failed to extract file path');
+  
+        console.log(`Decoded URL: ${decodedUrl}`);
+        console.log(`File Path: ${filePath}`);
+  
         const fileRef = ref(this.storage, filePath);
-
-        await deleteObject(fileRef);
+  
+        // Verificar se o arquivo realmente existe antes de tentar deletar
+        try {
+          await getDownloadURL(fileRef);
+          await deleteObject(fileRef); // Deleta o arquivo no Firebase Storage
+        } catch (getError) {
+          console.error('Error checking file existence:', getError.message);
+          throw new BadRequestException('File does not exist');
+        }
+  
+        // Atualiza o caminho da imagem para o avatar padrão com o formato completo
+        const defaultAvatarUrl = 'https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9';
+  
+        // Atualizar o registro do usuário no banco de dados com o avatar padrão (URL completa)
+        await this.usersRepository.update(user.userId, { path: defaultAvatarUrl });
+  
+        return { message: 'Profile picture deleted successfully, default avatar set' };
+      } else {
+        return { message: 'No profile picture to delete' };
       }
-
-      const defaultAvatarUrl = 'https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9';
-
-      await this.usersRepository.update(userId, { path: defaultAvatarUrl });
-
-      return { message: 'Profile picture deleted successfully, default avatar set' };
     } catch (error) {
+      console.error('Error deleting profile picture:', error.message);
       throw new BadRequestException(`Error deleting profile picture: ${error.message}`);
     }
   }
+  
+  
+
+
+
 
   async getProfilePictureUrl(userId: number) {
     try {

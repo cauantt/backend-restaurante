@@ -18,6 +18,9 @@ export class Product {
     @Column()
     price : number
 
+    @Column()
+    storage : number
+
     
 
     @Column({default: "https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9"})

@@ -9,9 +9,13 @@ export class CreateProductDto {
 
     price : number;
 
+    storage : number
+
     categoryId : number;
 
     userId: number;
+
+  
 
 
     @IsOptional()
