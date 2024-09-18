@@ -10,6 +10,17 @@ export class CreateUserDto {
 
     enterprise : string;
 
+    @IsOptional()
+    category : string;
+
+    @IsOptional()
+    deliveryTime : number;
+    
+
+    @IsOptional()
+    deliveryPrice : string;
+
+
     @IsEnum (Role)
     @IsOptional()
     role?: number;

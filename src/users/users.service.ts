@@ -50,6 +50,10 @@ export class UsersService {
     }
   }
 
+ 
+  
+  
+
   async findOne(userId: number) {
     
     const exists = await this.repository.findOneBy({ userId })

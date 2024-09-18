@@ -9,26 +9,28 @@ import { Product } from 'src/products/entities/product.entity';
 export class UploadsController {
   constructor(private readonly fileUploadService: UploadsService) {}
 
-  @Post('profile')
-  @UseGuards(AuthGuard) 
-  @UseInterceptors(FileInterceptor('file', multerOptions)) // Uses file interceptor
-  async uploadProfile(
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req: any
-  ) {
-    if (!file) {
-      throw new BadRequestException('No file provided');
-    }
-
-    const userId = req.user.sub;
-
-    try {
-      const result = await this.fileUploadService.handleFileUpload(file, userId);
-      return { message: 'Profile picture uploaded and replaced successfully', imageUrl: result.fileUrl };
-    } catch (error) {
-      throw new BadRequestException(`Error uploading profile picture: ${error.message}`);
-    }
+  @Post('profile/:userId')
+@UseGuards(AuthGuard)
+@UseInterceptors(FileInterceptor('file', multerOptions))
+async uploadProfile(
+  @UploadedFile() file: Express.Multer.File,
+  @Param('userId') userId: string,
+  @Req() req: any
+) {
+  console.log("Received userId:", userId); // Debug
+  if (!file) {
+    throw new BadRequestException('No file provided');
   }
+
+  try {
+    const result = await this.fileUploadService.handleFileUpload(file, parseInt(userId));
+    return { message: 'Profile picture uploaded and replaced successfully', imageUrl: result.fileUrl };
+  } catch (error) {
+    throw new BadRequestException(`Error uploading profile picture: ${error.message}`);
+  }
+}
+
+  
 
   @Delete('profile')
   @UseGuards(AuthGuard) // Add authentication guard

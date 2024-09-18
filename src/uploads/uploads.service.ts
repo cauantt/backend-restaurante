@@ -20,6 +20,7 @@ export class UploadsService {
 
   async handleFileUpload(file: Express.Multer.File, userId: number) {
     try {
+      console.log(userId)
       const user = await this.usersRepository.findOneBy({ userId });
       if (!user) throw new NotFoundException('User not found');
 
