@@ -1,8 +1,9 @@
 
 
 import { Category } from "src/categories/entities/category.entity"
+import { OrderItem } from "src/order-items/entities/order-item.entity"
 import { User } from "src/users/entities/user.entity" 
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Product {
@@ -19,6 +20,10 @@ export class Product {
     price : number
 
     @Column()
+    
+    description : string;
+
+    @Column()
     storage : number
 
     
@@ -32,6 +37,10 @@ export class Product {
     @ManyToOne(() => Category, (category) => category.products, {onDelete: 'CASCADE'})
 
     category  : Category;
+
+
+    @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+    orderItems: OrderItem[];
 
 
 

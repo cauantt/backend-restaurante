@@ -4,6 +4,8 @@ import { hashSync } from 'bcrypt';
 import { Role } from 'src/auth/role.enum';
 import { IsEmail, IsNotEmpty, IsOptional, IsStrongPassword } from 'class-validator';
 import { Category } from 'src/categories/entities/category.entity';
+import { Order } from 'src/orders/entities/order.entity';
+import { Address } from 'src/adress/entities/adress.entity';
 
 @Entity()
 @Unique(['email'])
@@ -18,7 +20,6 @@ export class User {
 
   @IsNotEmpty({ message: 'Password cannot be empty' })
   @Column()
-  
   password: string;
 
   @IsNotEmpty({ message: 'Firstname cannot be empty' })
@@ -27,33 +28,35 @@ export class User {
 
   @IsOptional()
   @Column()
-  category : string;
+  category: string;
 
   @IsOptional()
   @Column()
-    deliveryTime : number;
+  deliveryTime: number;
 
+  @IsOptional()
+  @Column()
+  deliveryPrice: string;
 
-    
-    @IsOptional()
-    @Column()
-    deliveryPrice : string;
+  @Column({
+    default: "https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9"
+  })
+  path: string;
 
-
-
-  @Column({default: "https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9"})
-  path:string
-  
   @Column({ type: 'int', default: Role.User })
   role: Role;
 
- 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
 
-
   @OneToMany(() => Category, (category) => category.id)
   categories: Category[];
+
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
+
+  @OneToMany(() => Address, (address) => address.user)
+  address: Address[];
 
   @BeforeInsert()
   hashPassword() {

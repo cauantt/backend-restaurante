@@ -27,5 +27,7 @@ export class CreateUserDto {
 
     @IsOptional()
     path : string
+
+    
   
 }
