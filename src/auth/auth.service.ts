@@ -17,7 +17,7 @@ export class AuthService {
     email: string,  
     pass: string,
     
-  ): Promise<{ enterprise : string ,access_token: string , userId: number, email: string , path : string , role : number }> {
+  ): Promise<{ enterprise : string ,access_token: string , userId: number, email: string , path : string , role : number , phone : string}> {
     const user = await this.usersService.findOne2(email);
     if (!user) {
       throw new NotFoundException("Login ou senha invalido!s");
@@ -32,10 +32,11 @@ export class AuthService {
 
 
 
-    const payload = { email: user.email, userId: user.userId, path: user.path, role : user.role, enterprise : user.enterprise };
+    const payload = { email: user.email, userId: user.userId, path: user.path, role : user.role, enterprise : user.enterprise, phone : user.phone };
 
     const accessToken = await this.jwtService.signAsync(payload);
     return {
+      phone : user.phone,
       access_token: accessToken,
       userId : user.userId,
       email : email,

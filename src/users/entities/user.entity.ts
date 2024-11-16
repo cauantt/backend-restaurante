@@ -26,16 +26,27 @@ export class User {
   @Column()
   enterprise: string;
 
-  @IsOptional()
   @Column()
+  phone: string;
+
+
+
+  @IsOptional()
+  @Column({
+    default: "cliente"
+  })
   category: string;
 
   @IsOptional()
-  @Column()
+  @Column({
+    default: "0"
+  })
   deliveryTime: number;
 
   @IsOptional()
-  @Column()
+  @Column({
+    default: "0"
+  })
   deliveryPrice: string;
 
   @Column({

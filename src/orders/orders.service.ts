@@ -33,39 +33,38 @@ export class OrdersService {
     
   }
 
-  async findAll(userId :number ) {
-
+  async findAll(userId: number) {
     try {
-    
-     return await this.repository.find({
-
-      where: {
-        establishment: {
+      return await this.repository.find({
+        where: {
+          establishment: {
             userId: userId,
+          },
         },
-    },
-    relations: {
-      address : true,
-        customer: true,
-        establishment: true,
-        orderItems: {
+        relations: {
+          address: true, // Include the address relation
+          customer: true,
+          establishment: true,
+          orderItems: {
             product: true, // Ensure you include the product relation here
+          },
         },
-    },
-
-     })
-    } 
-
-    catch(error){
-
-
-      console.log(error)
+        // Use the `select` option to specify the fields you want from the `address` relation
+        select: {
+          address: {
+            district: true, // Include district field
+            street: true,   // Include street field
+            number: true,   // Include number field
+            state: true,    // Include state field
+            city: true,     // Include city field
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
     }
-  
-
-
-
   }
+  
 
 
   async findOne(userId: number) {
@@ -82,6 +81,7 @@ export class OrdersService {
         },
         relations: {
             customer: true,
+            address : true, 
             establishment: true,
             orderItems: {
                 product: true, // Ensure you include the product relation here

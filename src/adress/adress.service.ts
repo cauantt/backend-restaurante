@@ -68,12 +68,12 @@ export class AddressService {
 
   async remove(id: number) {
     try {
-      const address = await this.repository.findOne({ where: { id } });
-      if (!address) {
-        throw new NotFoundException("Endereço não encontrado!");
-      }
+      const address = await this.repository.findOneBy({id});
+      
 
-      return await this.repository.remove(address); // Removendo o endereço
+      await this.repository.remove(address); 
+
+      return("deletado com sucesso")
     } catch (error) {
       throw new NotFoundException(error.message);
     }

@@ -8,6 +8,8 @@ export class CreateUserDto {
 
     password: string;
 
+    phone : string
+
     enterprise : string;
 
     @IsOptional()
