@@ -8,19 +8,17 @@ export class AdressController {
   constructor(private readonly adressService: AddressService) {}
 
   @Post()
-  create(@Body() createAdressDto: CreateAddressDto, @Body('userId') userId: number) {
-    return this.adressService.create(createAdressDto, userId);
+  create(@Body() createAddressDto: CreateAddressDto, @Body('userId') userId: number) {
+    return this.adressService.create(createAddressDto, userId);
   }
+  
+  
 
-  @Get()
-  findAll() {
-    return this.adressService.findAll();
-  }
+  @Get('/:userId')  // Corrigido para userId
+findByUserId(@Param('userId') userId: number) {  // Corrigido para userId
+  return this.adressService.findByUserId(userId); 
+}
 
-  @Get('/:userId') // Alterado para pegar o userId como parâmetro de rota
-  findByUserIdfindOne(@Param('id') id: number) { // Mudou o nome do método para refletir o que faz
-    return this.adressService.findByUserId(id); // Chama o serviço passando o userId
-  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAdressDto: UpdateAddressDto) {

@@ -47,14 +47,15 @@ export class UploadsService {
     }
   }
 
-
   async deleteProfilePicture(userId: number) {
     try {
       const user = await this.usersRepository.findOneBy({ userId });
+      console.log(userId);
+      
       if (!user) throw new NotFoundException('User not found');
   
       if (user.path) {
-        // Extrair o caminho do arquivo da URL
+        // Extract file path from URL
         const url = user.path;
         const decodedUrl = decodeURIComponent(url);
         const filePath = decodedUrl.split('/o/')[1]?.split('?')[0];
@@ -66,19 +67,18 @@ export class UploadsService {
   
         const fileRef = ref(this.storage, filePath);
   
-        // Verificar se o arquivo realmente existe antes de tentar deletar
+        // Check if file exists and delete
         try {
-          await getDownloadURL(fileRef);
-          await deleteObject(fileRef); // Deleta o arquivo no Firebase Storage
+          await getDownloadURL(fileRef);  // Verifies file existence
+          await deleteObject(fileRef);    // Deletes the file from Firebase Storage
         } catch (getError) {
           console.error('Error checking file existence:', getError.message);
           throw new BadRequestException('File does not exist');
         }
   
-        // Atualiza o caminho da imagem para o avatar padrão com o formato completo
-        const defaultAvatarUrl = 'https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9';
+        // Update user profile with default avatar URL
+        const defaultAvatarUrl = 'https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/restaurante%2Fperfil%2Fdefault-avatar-icon-of-social-media-user-vector.jpg?alt=media&token=ec9d4fc8-120c-4594-b4d6-ebb157d6a622';
   
-        // Atualizar o registro do usuário no banco de dados com o avatar padrão (URL completa)
         await this.usersRepository.update(user.userId, { path: defaultAvatarUrl });
   
         return { message: 'Profile picture deleted successfully, default avatar set' };
@@ -90,6 +90,7 @@ export class UploadsService {
       throw new BadRequestException(`Error deleting profile picture: ${error.message}`);
     }
   }
+  
   
   
 

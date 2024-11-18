@@ -50,7 +50,7 @@ export class User {
   deliveryPrice: string;
 
   @Column({
-    default: "https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/twitter-novo-avatar-padrao-2017-bluebus.png?alt=media&token=1e69aca8-a6a0-4a6d-b4b3-365906fd26d9"
+    default: "https://firebasestorage.googleapis.com/v0/b/teste-d4080.appspot.com/o/restaurante%2Fperfil%2Fdefault-avatar-icon-of-social-media-user-vector.jpg?alt=media&token=ec9d4fc8-120c-4594-b4d6-ebb157d6a622"
   })
   path: string;
 

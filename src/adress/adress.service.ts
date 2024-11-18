@@ -14,29 +14,22 @@ export class AddressService {
   ) {}
 
   async create(body: CreateAddressDto, userId: number) {
-    try {
-      const user = await this.usersRepository.findOne({ where: { userId: userId } });
-      if (!user) {
-        throw new NotFoundException("Usuário não encontrado!");
-      }
-
-      const address = this.repository.create({ ...body, user }); // Associando o endereço ao usuário
-      return await this.repository.save(address);
-    } catch (error) {
-      throw new NotFoundException(error.message);
+    // Find the user by userId
+    const user = await this.usersRepository.findOne({ where: { userId: userId } });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado!');
     }
+  
+    // Create a new address and associate it with the user
+    const address = this.repository.create({ ...body, user });
+    return await this.repository.save(address);
   }
+  
+  
 
-  async findAll() {
+  async findByUserId(userId: number) { 
     try {
-      return await this.repository.find({ relations: ['user'] }); // Buscando todos os endereços
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
-  }
-
-  async findByUserId(userId: number) { // Novo método para buscar endereços pelo userId
-    try {
+      console.log(userId)
       const addresses = await this.repository.find({
         where: {
             user: {

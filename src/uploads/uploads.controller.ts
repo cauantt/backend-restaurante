@@ -32,20 +32,19 @@ async uploadProfile(
 
   
 
-  @Delete('profile')
-  @UseGuards(AuthGuard) // Add authentication guard
-  async deleteProfile(
-    @Req() req: any
-  ) {
-    const userId = req.user.sub;
+@Delete('profile')
+@UseGuards(AuthGuard) // Add authentication guard
+async deleteProfile(@Req() req: any) {
+  const userId = req.user.sub;  // Assuming this is how you extract the user ID after authentication
 
-    try {
-      await this.fileUploadService.deleteProfilePicture(userId);
-      return { message: 'Profile picture deleted successfully' };
-    } catch (error) {
-      throw new BadRequestException(`Error deleting profile picture: ${error.message}`);
-    }
+  try {
+    await this.fileUploadService.deleteProfilePicture(userId); // Call service to delete the picture
+    return { message: 'Profile picture deleted successfully' };
+  } catch (error) {
+    throw new BadRequestException(`Error deleting profile picture: ${error.message}`);
   }
+}
+
 
   @Get('profile-url')
   @UseGuards(AuthGuard) // Add authentication guard

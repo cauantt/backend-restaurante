@@ -23,6 +23,7 @@ export class CreateOrderDto {
     
     orderItems: OrderItem[]; 
 
+    @IsOptional()
     address: Address; 
 
     
